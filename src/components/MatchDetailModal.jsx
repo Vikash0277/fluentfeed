@@ -139,44 +139,50 @@ export const MatchDetailModal = ({
           {dimensions.map((dim) => (
             <div
               key={dim.title}
-              className={`p-3.5 rounded-2xl border transition ${
+              className={`p-4 rounded-2xl border transition ${
                 dim.matched
                   ? "bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200/60 dark:border-emerald-800/40"
                   : "bg-slate-50 dark:bg-slate-800/40 border-slate-100 dark:border-slate-800"
               }`}
             >
-              <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-2">
-                  {dim.matched ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                  ) : (
-                    <XCircle className="w-4 h-4 text-slate-400" />
-                  )}
-                  <span className="text-xs font-bold text-slate-900 dark:text-white">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2.5">
+                  <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+                    dim.matched
+                      ? "bg-emerald-100 dark:bg-emerald-900/60"
+                      : "bg-slate-200 dark:bg-slate-700"
+                  }`}>
+                    {dim.matched ? (
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                    ) : (
+                      <XCircle className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
+                    )}
+                  </div>
+                  <span className="text-sm font-bold text-slate-900 dark:text-white">
                     {dim.title}
                   </span>
                 </div>
                 <span
-                  className={`text-xs font-mono font-bold px-2 py-0.5 rounded-md ${
+                  className={`text-xs font-mono font-bold px-2.5 py-1 rounded-lg ${
                     dim.matched
                       ? "bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300"
                       : "bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400"
                   }`}
                 >
-                  {dim.matched ? `+${dim.points} pts` : "0 pts"}
+                  {dim.matched ? `+${dim.points}` : "0"}
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-[11px] mt-2 pt-2 border-t border-slate-200/50 dark:border-slate-700/50">
-                <div>
-                  <span className="text-slate-400 block text-[10px]">You:</span>
-                  <span className="font-semibold text-slate-700 dark:text-slate-300">
+              <div className="grid grid-cols-2 gap-3 text-xs mt-2 pt-2.5 border-t border-slate-200/50 dark:border-slate-700/50">
+                <div className="bg-white/60 dark:bg-slate-900/40 p-2.5 rounded-xl">
+                  <span className="text-slate-400 block text-[10px] font-medium uppercase tracking-wider mb-0.5">You</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200">
                     {dim.userVal}
                   </span>
                 </div>
-                <div>
-                  <span className="text-slate-400 block text-[10px]">{partner.fullName?.split(" ")[0]}:</span>
-                  <span className="font-semibold text-slate-700 dark:text-slate-300">
+                <div className="bg-white/60 dark:bg-slate-900/40 p-2.5 rounded-xl">
+                  <span className="text-slate-400 block text-[10px] font-medium uppercase tracking-wider mb-0.5">{partner.fullName?.split(" ")[0]}</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200">
                     {dim.partnerVal}
                   </span>
                 </div>

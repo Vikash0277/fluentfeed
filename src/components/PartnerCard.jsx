@@ -2,16 +2,12 @@ import React, { useState } from "react";
 import {
   Sparkles,
   MapPin,
-  Clock,
   Target,
-  Languages,
   UserCheck,
   UserPlus,
   Clock3,
-  ChevronDown,
-  ChevronUp,
-  MessageSquare,
   Check,
+  ChevronRight,
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { SPEAKING_TIME_DETAILS } from "../utils/constants";
@@ -21,7 +17,6 @@ export const PartnerCard = ({
   onConnect,
   onViewDetails,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
   const [isSending, setIsSending] = useState(false);
 
   const {
@@ -192,53 +187,29 @@ export const PartnerCard = ({
           </p>
         )}
 
-        {/* Expandable Match Breakdown */}
+        {/* Match Breakdown Preview */}
         <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/60">
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="w-full flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
-          >
-            <span>Why you matched:</span>
-            <div className="flex items-center gap-1 text-indigo-600 dark:text-indigo-400">
-              <span>{isExpanded ? "Hide" : "Details"}</span>
-              {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-            </div>
-          </button>
-
-          {isExpanded && (
-            <div className="mt-2.5 space-y-1.5 text-xs animate-in fade-in duration-200 bg-slate-50 dark:bg-slate-950/50 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
-              <div className="flex items-center justify-between">
-                <span className="text-slate-600 dark:text-slate-400">Same Learning Goal (+40)</span>
-                <span className={matchBreakdown.learningGoal ? "text-emerald-500 font-bold" : "text-slate-400"}>
-                  {matchBreakdown.learningGoal ? "✓ Matched" : "—"}
+          <div className="flex items-center gap-1.5 mb-2">
+            <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Why you matched:</span>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {[
+              { key: "learningGoal", label: "Goal", pts: 40 },
+              { key: "englishLevel", label: "Level", pts: 25 },
+              { key: "preferredSpeakingTime", label: "Time", pts: 20 },
+              { key: "country", label: "Country", pts: 10 },
+              { key: "nativeLanguage", label: "Language", pts: 5 },
+            ].map(({ key, label, pts }) => (
+              matchBreakdown[key] ? (
+                <span key={key} className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 text-[10px] font-semibold rounded-lg border border-emerald-200/60 dark:border-emerald-800/40">
+                  <Check className="w-2.5 h-2.5" /> {label} +{pts}
                 </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-600 dark:text-slate-400">Same English Level (+25)</span>
-                <span className={matchBreakdown.englishLevel ? "text-emerald-500 font-bold" : "text-slate-400"}>
-                  {matchBreakdown.englishLevel ? "✓ Matched" : "—"}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-600 dark:text-slate-400">Preferred Speaking Time (+20)</span>
-                <span className={matchBreakdown.preferredSpeakingTime ? "text-emerald-500 font-bold" : "text-slate-400"}>
-                  {matchBreakdown.preferredSpeakingTime ? "✓ Matched" : "—"}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-600 dark:text-slate-400">Same Country (+10)</span>
-                <span className={matchBreakdown.country ? "text-emerald-500 font-bold" : "text-slate-400"}>
-                  {matchBreakdown.country ? "✓ Matched" : "—"}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-600 dark:text-slate-400">Same Native Language (+5)</span>
-                <span className={matchBreakdown.nativeLanguage ? "text-emerald-500 font-bold" : "text-slate-400"}>
-                  {matchBreakdown.nativeLanguage ? "✓ Matched" : "—"}
-                </span>
-              </div>
-            </div>
-          )}
+              ) : null
+            ))}
+            {Object.values(matchBreakdown).every((v) => !v) && (
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 italic">No criteria matched</span>
+            )}
+          </div>
         </div>
       </div>
 
@@ -246,9 +217,9 @@ export const PartnerCard = ({
       <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
         <button
           onClick={() => onViewDetails?.(user, matchData)}
-          className="text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-2 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+          className="flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 px-2 py-1.5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition cursor-pointer"
         >
-          View Profile
+          View Details <ChevronRight className="w-3.5 h-3.5" />
         </button>
 
         {/* Dynamic Connect Button */}
