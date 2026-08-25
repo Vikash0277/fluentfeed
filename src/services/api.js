@@ -130,6 +130,27 @@ export const api = {
     request(`/connections/${connectionId}`, {
       method: "DELETE",
     }),
+
+  // Speaking Evaluation
+  getTopics: () => request("/evaluations/topics"),
+
+  submitEvaluation: (data) =>
+    request("/evaluations", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+
+  getEvaluationHistory: (params = {}) => {
+    const searchParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        searchParams.append(key, value);
+      }
+    });
+    return request(`/evaluations/history?${searchParams.toString()}`);
+  },
+
+  getEvaluationById: (id) => request(`/evaluations/${id}`),
 };
 
 export default api;

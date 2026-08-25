@@ -2,13 +2,14 @@ import React from "react";
 import {
   Sparkles,
   Users,
+  Mic,
   Sun,
   Moon,
   LogOut,
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const Navbar = ({
   currentUser,
@@ -19,6 +20,8 @@ export const Navbar = ({
   const { isDark, toggleTheme } = useTheme();
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isEvaluationPage = location.pathname === "/evaluation";
 
   const handleLogout = () => {
     logout();
@@ -50,6 +53,19 @@ export const Navbar = ({
 
         {/* Right Tools */}
         <div className="flex items-center gap-2.5 sm:gap-3.5">
+          {/* Speaking Practice */}
+          <button
+            onClick={() => navigate(isEvaluationPage ? "/" : "/evaluation")}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+              isEvaluationPage
+                ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/25"
+                : "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-950/80 border border-indigo-200/60 dark:border-indigo-800/40"
+            }`}
+          >
+            <Mic className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">{isEvaluationPage ? "Dashboard" : "Speaking"}</span>
+          </button>
+
           {/* Connections Drawer Button */}
           <button
             onClick={onOpenConnections}

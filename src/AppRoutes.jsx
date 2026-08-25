@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import SpeakingEvaluationPage from "./pages/SpeakingEvaluationPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import Dashboard from "./App";
 
@@ -20,6 +21,7 @@ const AppRoutes = () => {
       />
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<Dashboard />} />
+        <Route path="/evaluation" element={<SpeakingEvaluationPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
