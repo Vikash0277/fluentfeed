@@ -217,13 +217,13 @@ export const DailyPracticeSection = () => {
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-7 gap-1">
+          <div className="flex flex-wrap gap-1">
             {last30.map((day) => {
               const practiced = streakData.monthHistory?.includes(day);
               return (
                 <div
                   key={day}
-                  className={`aspect-square rounded transition ${
+                  className={`w-3 h-3 rounded-sm transition ${
                     practiced
                       ? "bg-amber-400 dark:bg-amber-500"
                       : "bg-slate-200 dark:bg-slate-700"
