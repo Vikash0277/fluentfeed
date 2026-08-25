@@ -217,7 +217,7 @@ export const DailyPracticeSection = () => {
               </div>
             </div>
           </div>
-          <div className="flex flex-wrap gap-1">
+          <div className="grid grid-cols-6 gap-1 w-fit">
             {last30.map((day) => {
               const practiced = streakData.monthHistory?.includes(day);
               return (
