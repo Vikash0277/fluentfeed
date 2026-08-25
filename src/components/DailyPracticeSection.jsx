@@ -110,19 +110,6 @@ function getLast30Days() {
   return days;
 }
 
-function getWeeksOfMonth(days) {
-  const weeks = [];
-  let currentWeek = [];
-  days.forEach((day, i) => {
-    currentWeek.push(day);
-    if (currentWeek.length === 7 || i === days.length - 1) {
-      weeks.push(currentWeek);
-      currentWeek = [];
-    }
-  });
-  return weeks;
-}
-
 export { updateStreak, getStreak };
 
 export const DailyPracticeSection = () => {
@@ -148,7 +135,7 @@ export const DailyPracticeSection = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+    <div className="grid grid-cols-1 lg:grid-cols-[3fr_7fr] gap-4 mb-8">
       {/* Topic of the Day */}
       <div className="relative overflow-hidden bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-5 sm:p-6 shadow-sm">
         <div className="flex items-start justify-between gap-4">
@@ -216,46 +203,36 @@ export const DailyPracticeSection = () => {
 
         {/* Last 30 days - month grid */}
         <div className="mt-auto">
-          <p className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">
-            Last 30 Days
-          </p>
-          <div className="space-y-1">
-            {weeks.map((week, wi) => (
-              <div key={wi} className="flex items-center gap-1">
-                <span className="text-[8px] font-medium text-slate-400 dark:text-slate-500 w-5 text-right shrink-0">
-                  W{wi + 1}
-                </span>
-                <div className="flex items-center gap-1 flex-1">
-                  {week.map((day) => {
-                    const practiced = streakData.monthHistory?.includes(day);
-                    const dayNum = new Date(day + "T00:00:00").getDate();
-                    return (
-                      <div
-                        key={day}
-                        className={`flex-1 aspect-square rounded-md flex items-center justify-center text-[9px] font-bold transition ${
-                          practiced
-                            ? "bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700"
-                            : "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700"
-                        }`}
-                        title={`${day}${practiced ? " (practiced)" : ""}`}
-                      >
-                        {dayNum}
-                      </div>
-                    );
-                  })}
-                </div>
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+              {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+            </p>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 rounded-sm bg-amber-400 dark:bg-amber-500" />
+                <span className="text-[9px] text-slate-400 dark:text-slate-500">Done</span>
               </div>
-            ))}
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 rounded-sm bg-slate-200 dark:bg-slate-700" />
+                <span className="text-[9px] text-slate-400 dark:text-slate-500">Missed</span>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-3 mt-2">
-            <div className="flex items-center gap-1">
-              <div className="w-2.5 h-2.5 rounded-sm bg-amber-100 dark:bg-amber-900/60 border border-amber-300 dark:border-amber-700" />
-              <span className="text-[9px] text-slate-400 dark:text-slate-500">Practiced</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="w-2.5 h-2.5 rounded-sm bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700" />
-              <span className="text-[9px] text-slate-400 dark:text-slate-500">Missed</span>
-            </div>
+          <div className="grid grid-cols-7 gap-1">
+            {last30.map((day) => {
+              const practiced = streakData.monthHistory?.includes(day);
+              return (
+                <div
+                  key={day}
+                  className={`aspect-square rounded transition ${
+                    practiced
+                      ? "bg-amber-400 dark:bg-amber-500"
+                      : "bg-slate-200 dark:bg-slate-700"
+                  }`}
+                  title={day}
+                />
+              );
+            })}
           </div>
         </div>
       </div>
