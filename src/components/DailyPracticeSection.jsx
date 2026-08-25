@@ -134,7 +134,7 @@ export const DailyPracticeSection = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[3fr_7fr] gap-4 mb-8">
+    <div className="grid grid-cols-1 lg:grid-cols-[7fr_3fr] gap-4 mb-8">
       {/* Topic of the Day */}
       <div className="relative overflow-hidden bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-5 sm:p-6 shadow-sm">
         <div className="flex items-start justify-between gap-4">
