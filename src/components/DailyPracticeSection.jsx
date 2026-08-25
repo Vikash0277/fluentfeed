@@ -66,10 +66,10 @@ function getYesterdayStr() {
 function getStreak(userId) {
   try {
     const raw = localStorage.getItem(`fluentfeed_streak_${userId}`);
-    if (!raw) return { streak: 0, lastPracticeDate: null, weekHistory: [] };
+    if (!raw) return { streak: 0, lastPracticeDate: null, monthHistory: [] };
     return JSON.parse(raw);
   } catch {
-    return { streak: 0, lastPracticeDate: null, weekHistory: [] };
+    return { streak: 0, lastPracticeDate: null, monthHistory: [] };
   }
 }
 
@@ -87,23 +87,22 @@ function updateStreak(userId) {
     newStreak = streakData.streak + 1;
   }
 
-  const weekHistory = [...(streakData.weekHistory || []), today]
+  const monthHistory = [...(streakData.monthHistory || []), today]
     .filter((d) => {
       const date = new Date(d);
       const cutoff = new Date();
-      cutoff.setDate(cutoff.getDate() - 7);
+      cutoff.setDate(cutoff.getDate() - 30);
       return date >= cutoff;
-    })
-    .slice(-7);
+    });
 
-  const updated = { streak: newStreak, lastPracticeDate: today, weekHistory };
+  const updated = { streak: newStreak, lastPracticeDate: today, monthHistory };
   localStorage.setItem(`fluentfeed_streak_${userId}`, JSON.stringify(updated));
   return updated;
 }
 
-function getLast7Days() {
+function getLast30Days() {
   const days = [];
-  for (let i = 6; i >= 0; i--) {
+  for (let i = 29; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
     days.push(d.toISOString().split("T")[0]);
@@ -111,18 +110,32 @@ function getLast7Days() {
   return days;
 }
 
+function getWeeksOfMonth(days) {
+  const weeks = [];
+  let currentWeek = [];
+  days.forEach((day, i) => {
+    currentWeek.push(day);
+    if (currentWeek.length === 7 || i === days.length - 1) {
+      weeks.push(currentWeek);
+      currentWeek = [];
+    }
+  });
+  return weeks;
+}
+
 export { updateStreak, getStreak };
 
 export const DailyPracticeSection = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [streakData, setStreakData] = useState({ streak: 0, lastPracticeDate: null, weekHistory: [] });
+  const [streakData, setStreakData] = useState({ streak: 0, lastPracticeDate: null, monthHistory: [] });
 
   const dailyTopic = TOPICS[getDayOfYear() % TOPICS.length];
   const Icon = iconMap[dailyTopic.icon] || Sparkles;
   const today = getTodayStr();
   const practicedToday = streakData.lastPracticeDate === today;
-  const last7 = getLast7Days();
+  const last30 = getLast30Days();
+  const weeks = getWeeksOfMonth(last30);
 
   useEffect(() => {
     if (user?._id) {
@@ -201,32 +214,48 @@ export const DailyPracticeSection = () => {
           )}
         </div>
 
-        {/* Last 7 days */}
+        {/* Last 30 days - month grid */}
         <div className="mt-auto">
           <p className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">
-            Last 7 Days
+            Last 30 Days
           </p>
-          <div className="flex items-center gap-1.5">
-            {last7.map((day) => {
-              const practiced = streakData.weekHistory?.includes(day);
-              const dayLabel = new Date(day + "T00:00:00").toLocaleDateString("en-US", { weekday: "short" });
-              return (
-                <div key={day} className="flex flex-col items-center gap-1">
-                  <div
-                    className={`w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-bold transition ${
-                      practiced
-                        ? "bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700"
-                        : "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700"
-                    }`}
-                  >
-                    {practiced ? "✓" : "·"}
-                  </div>
-                  <span className="text-[9px] font-medium text-slate-400 dark:text-slate-500">
-                    {dayLabel}
-                  </span>
+          <div className="space-y-1">
+            {weeks.map((week, wi) => (
+              <div key={wi} className="flex items-center gap-1">
+                <span className="text-[8px] font-medium text-slate-400 dark:text-slate-500 w-5 text-right shrink-0">
+                  W{wi + 1}
+                </span>
+                <div className="flex items-center gap-1 flex-1">
+                  {week.map((day) => {
+                    const practiced = streakData.monthHistory?.includes(day);
+                    const dayNum = new Date(day + "T00:00:00").getDate();
+                    return (
+                      <div
+                        key={day}
+                        className={`flex-1 aspect-square rounded-md flex items-center justify-center text-[9px] font-bold transition ${
+                          practiced
+                            ? "bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700"
+                            : "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700"
+                        }`}
+                        title={`${day}${practiced ? " (practiced)" : ""}`}
+                      >
+                        {dayNum}
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
+              </div>
+            ))}
+          </div>
+          <div className="flex items-center gap-3 mt-2">
+            <div className="flex items-center gap-1">
+              <div className="w-2.5 h-2.5 rounded-sm bg-amber-100 dark:bg-amber-900/60 border border-amber-300 dark:border-amber-700" />
+              <span className="text-[9px] text-slate-400 dark:text-slate-500">Practiced</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-2.5 h-2.5 rounded-sm bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700" />
+              <span className="text-[9px] text-slate-400 dark:text-slate-500">Missed</span>
+            </div>
           </div>
         </div>
       </div>
