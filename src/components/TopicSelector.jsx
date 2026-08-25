@@ -13,6 +13,7 @@ import {
   Languages,
   Sparkles,
 } from "lucide-react";
+import { TOPICS } from "../utils/constants";
 
 const iconMap = {
   sun: Sun,

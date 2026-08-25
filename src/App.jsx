@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
+import DailyPracticeSection from "./components/DailyPracticeSection";
 import FilterBar from "./components/FilterBar";
 import PartnerCard from "./components/PartnerCard";
 import SkeletonCard from "./components/SkeletonCard";
@@ -156,6 +157,9 @@ export function App() {
           onOpenScoringGuide={() => setIsScoringGuideOpen(true)}
           totalMatchesCount={matches.length}
         />
+
+        {/* Daily Topic + Streak */}
+        <DailyPracticeSection />
 
         {/* Dynamic Filters & Search Bar */}
         <div className="mb-8">

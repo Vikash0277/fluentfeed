@@ -1,3 +1,18 @@
+export const TOPICS = [
+  { id: 1, title: "My Daily Routine", description: "Describe your typical day from morning to night", icon: "sun", category: "Lifestyle" },
+  { id: 2, title: "A Memorable Travel Experience", description: "Talk about a trip that left a lasting impression", icon: "plane", category: "Travel" },
+  { id: 3, title: "Technology in My Life", description: "How technology has changed the way you live and work", icon: "laptop", category: "Technology" },
+  { id: 4, title: "My Favorite Hobby", description: "Explain what you love doing in your free time", icon: "heart", category: "Lifestyle" },
+  { id: 5, title: "Career Goals", description: "Where do you see yourself professionally in 5 years?", icon: "briefcase", category: "Career" },
+  { id: 6, title: "The Importance of Education", description: "Why education matters and how it shapes society", icon: "book", category: "Society" },
+  { id: 7, title: "A Book or Movie That Changed Me", description: "Share how a story influenced your perspective", icon: "film", category: "Culture" },
+  { id: 8, title: "Healthy Living", description: "Tips and habits for maintaining a healthy lifestyle", icon: "heart-pulse", category: "Health" },
+  { id: 9, title: "My Dream Vacation", description: "Describe your ideal getaway and what makes it special", icon: "palm-tree", category: "Travel" },
+  { id: 10, title: "Environmental Challenges", description: "Discuss a pressing environmental issue and solutions", icon: "leaf", category: "Society" },
+  { id: 11, title: "Learning English", description: "Your journey learning English - challenges and wins", icon: "languages", category: "Education" },
+  { id: 12, title: "If I Could Change One Thing", description: "What would you change about the world and why?", icon: "sparkles", category: "Society" },
+];
+
 export const ENGLISH_LEVELS = ["Beginner", "Intermediate", "Advanced"];
 
 export const LEARNING_GOALS = [

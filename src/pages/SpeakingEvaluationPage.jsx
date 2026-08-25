@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Mic, Loader2, ArrowLeft } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 import TopicSelector from "../components/TopicSelector";
 import AudioRecorder from "../components/AudioRecorder";
 import EvaluationResults from "../components/EvaluationResults";
+import { updateStreak } from "../components/DailyPracticeSection";
+import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
+import { TOPICS } from "../utils/constants";
 
 const STEPS = {
   TOPIC: "topic",
@@ -12,6 +16,8 @@ const STEPS = {
 };
 
 export const SpeakingEvaluationPage = () => {
+  const [searchParams] = useSearchParams();
+  const { user } = useAuth();
   const [step, setStep] = useState(STEPS.TOPIC);
   const [topics, setTopics] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState(null);
@@ -23,13 +29,24 @@ export const SpeakingEvaluationPage = () => {
     loadTopics();
   }, []);
 
+  useEffect(() => {
+    const topicId = searchParams.get("topicId");
+    if (topicId && topics.length > 0 && !selectedTopic) {
+      const topic = topics.find((t) => t.id === Number(topicId));
+      if (topic) {
+        setSelectedTopic(topic);
+        setStep(STEPS.RECORD);
+      }
+    }
+  }, [searchParams, topics, selectedTopic]);
+
   const loadTopics = async () => {
     setLoadingTopics(true);
     try {
       const res = await api.getTopics();
       setTopics(res.data.topics);
     } catch (err) {
-      setError(err.message || "Failed to load topics");
+      setTopics(TOPICS);
     } finally {
       setLoadingTopics(false);
     }
@@ -47,6 +64,9 @@ export const SpeakingEvaluationPage = () => {
       const res = await api.submitEvaluation(data);
       setEvaluation(res.data.evaluation);
       setStep(STEPS.RESULTS);
+      if (user?._id) {
+        updateStreak(user._id);
+      }
     } catch (err) {
       setError(err.message || "Failed to evaluate. Please try again.");
       throw err;
