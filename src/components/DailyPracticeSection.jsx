@@ -110,6 +110,33 @@ function getLast30Days() {
   return days;
 }
 
+function buildCalendarGrid(days) {
+  if (days.length === 0) return { weeks: [], startDayOfWeek: 0 };
+  const firstDate = new Date(days[0] + "T00:00:00");
+  const lastDate = new Date(days[days.length - 1] + "T00:00:00");
+  const startDow = firstDate.getDay();
+
+  const daySet = new Set(days);
+  const weeks = [];
+  let currentWeek = new Array(7).fill(null);
+
+  let currentDate = new Date(firstDate);
+  for (let i = 0; i < days.length + ((7 - ((days.length + startDow) % 7)) % 7); i++) {
+    const dow = currentDate.getDay();
+    const dateStr = currentDate.toISOString().split("T")[0];
+    if (daySet.has(dateStr)) {
+      currentWeek[dow] = dateStr;
+    }
+    if (dow === 6 || i === days.length + ((7 - ((days.length + startDow) % 7)) % 7) - 1) {
+      weeks.push(currentWeek);
+      currentWeek = new Array(7).fill(null);
+    }
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return weeks;
+}
+
 export { updateStreak, getStreak };
 
 export const DailyPracticeSection = () => {
@@ -200,9 +227,9 @@ export const DailyPracticeSection = () => {
           )}
         </div>
 
-        {/* Last 30 days - month grid */}
+        {/* Contribution Heatmap */}
         <div className="mt-auto">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-3">
             <p className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
               {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
             </p>
@@ -217,21 +244,35 @@ export const DailyPracticeSection = () => {
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-6 gap-1 w-fit">
-            {last30.map((day) => {
-              const practiced = streakData.monthHistory?.includes(day);
-              return (
-                <div
-                  key={day}
-                  className={`w-3 h-3 rounded-sm transition ${
-                    practiced
-                      ? "bg-amber-400 dark:bg-amber-500"
-                      : "bg-slate-200 dark:bg-slate-700"
-                  }`}
-                  title={day}
-                />
-              );
-            })}
+          <div className="flex gap-1.5">
+            {/* Day-of-week labels */}
+            <div className="flex flex-col gap-[3px] pt-0">
+              {["", "M", "", "W", "", "F", ""].map((label, i) => (
+                <div key={i} className="w-3 h-3 flex items-center justify-center text-[7px] font-semibold text-slate-400 dark:text-slate-500">
+                  {label}
+                </div>
+              ))}
+            </div>
+            {/* Heatmap weeks */}
+            <div className="flex gap-[3px]">
+              {buildCalendarGrid(last30).map((week, wi) => (
+                <div key={wi} className="flex flex-col gap-[3px]">
+                  {week.map((day, di) => (
+                    <div
+                      key={di}
+                      className={`w-3 h-3 rounded-sm transition ${
+                        day
+                          ? streakData.monthHistory?.includes(day)
+                            ? "bg-amber-400 dark:bg-amber-500"
+                            : "bg-slate-200 dark:bg-slate-700"
+                          : "bg-transparent"
+                      }`}
+                      title={day || ""}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
