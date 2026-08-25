@@ -122,7 +122,6 @@ export const DailyPracticeSection = () => {
   const today = getTodayStr();
   const practicedToday = streakData.lastPracticeDate === today;
   const last30 = getLast30Days();
-  const weeks = getWeeksOfMonth(last30);
 
   useEffect(() => {
     if (user?._id) {
